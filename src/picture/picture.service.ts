@@ -1,30 +1,31 @@
 import { Injectable } from '@nestjs/common';
-import type { Prisma } from '@prisma/client';
 
-import type { PrismaService } from '../prisma.service';
+import { Prisma } from '@prisma/client';
+
+import { PrismaService } from '../database/prisma.service';
 
 @Injectable()
 export class PictureService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private database: PrismaService) {}
 
   async create(
     connect: Prisma.UserWhereUniqueInput,
     pictureInput: Prisma.PictureCreateWithoutUserInput,
   ) {
     const data = { user: { connect }, ...pictureInput };
-    const picture = this.prisma.picture.create({ data });
+    const picture = this.database.picture.create({ data });
 
     return picture;
   }
 
   async findAll() {
-    const picture = this.prisma.picture.findMany();
+    const picture = this.database.picture.findMany();
 
     return picture;
   }
 
   async findOne(id_userId: Prisma.PictureIdUserIdCompoundUniqueInput) {
-    const picture = this.prisma.picture.findFirst({ where: id_userId });
+    const picture = this.database.picture.findFirst({ where: id_userId });
 
     return picture;
   }
@@ -33,13 +34,16 @@ export class PictureService {
     id_userId: Prisma.PictureIdUserIdCompoundUniqueInput,
     data: Prisma.PictureUpdateWithoutUserInput,
   ) {
-    const picture = this.prisma.picture.update({ where: { id_userId }, data });
+    const picture = this.database.picture.update({
+      where: { id_userId },
+      data,
+    });
 
     return picture;
   }
 
   async remove(id_userId: Prisma.PictureIdUserIdCompoundUniqueInput) {
-    const picture = this.prisma.picture.delete({ where: { id_userId } });
+    const picture = this.database.picture.delete({ where: { id_userId } });
 
     return picture;
   }
