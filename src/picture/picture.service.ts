@@ -1,26 +1,46 @@
 import { Injectable } from '@nestjs/common';
-import { CreatePictureDto } from './dto/create-picture.dto';
-import { UpdatePictureDto } from './dto/update-picture.dto';
+import type { Prisma } from '@prisma/client';
+
+import type { PrismaService } from '../prisma.service';
 
 @Injectable()
 export class PictureService {
-  create(createPictureDto: CreatePictureDto) {
-    return 'This action adds a new picture';
+  constructor(private prisma: PrismaService) {}
+
+  async create(
+    connect: Prisma.UserWhereUniqueInput,
+    pictureInput: Prisma.PictureCreateWithoutUserInput,
+  ) {
+    const data = { user: { connect }, ...pictureInput };
+    const picture = this.prisma.picture.create({ data });
+
+    return picture;
   }
 
-  findAll() {
-    return `This action returns all picture`;
+  async findAll() {
+    const picture = this.prisma.picture.findMany();
+
+    return picture;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} picture`;
+  async findOne(id_userId: Prisma.PictureIdUserIdCompoundUniqueInput) {
+    const picture = this.prisma.picture.findFirst({ where: id_userId });
+
+    return picture;
   }
 
-  update(id: number, updatePictureDto: UpdatePictureDto) {
-    return `This action updates a #${id} picture`;
+  async update(
+    id_userId: Prisma.PictureIdUserIdCompoundUniqueInput,
+    data: Prisma.PictureUpdateWithoutUserInput,
+  ) {
+    const picture = this.prisma.picture.update({ where: { id_userId }, data });
+
+    return picture;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} picture`;
+  async remove(id_userId: Prisma.PictureIdUserIdCompoundUniqueInput) {
+    const picture = this.prisma.picture.delete({ where: { id_userId } });
+
+    return picture;
   }
 }
