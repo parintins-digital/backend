@@ -1,13 +1,17 @@
-import { Body, Controller, Post } from '@nestjs/common';
-import { AuthService } from './auth.service';
+import { Controller, Get, Redirect } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
+import { GOOGLE_REDIRECT } from './auth.constants';
 
-@Controller(' ')
+import { OAuth } from './decorators/auth.decorator';
+
+@Controller('')
+@ApiTags('Auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  @Get('login')
+  @OAuth()
+  async login() {}
 
-  @Post()
-  async authenticateToken(@Body('token') token: string) {
-    const user = await this.authService.verifyAuthToken(token);
-    return this.authService.generateJwt(user);
-  }
+  @Get(GOOGLE_REDIRECT)
+  @Redirect('/', 200)
+  async redirect() {}
 }
