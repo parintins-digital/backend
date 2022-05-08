@@ -1,4 +1,4 @@
-import type { PictureCategory } from '@prisma/client';
+import { PictureCategory } from '@prisma/client';
 import { IsIn, IsNotEmpty, IsString, NotEquals } from 'class-validator';
 
 export class CreatePictureDto {
@@ -8,7 +8,7 @@ export class CreatePictureDto {
 
   @IsString()
   @NotEquals(null)
-  description?: string;
+  description?: string = '';
 
   @IsString()
   @IsIn(['ATTRACTION', 'CULTURE', 'LANDMARK', 'COMMUNITY'])

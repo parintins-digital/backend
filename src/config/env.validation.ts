@@ -58,10 +58,6 @@ export class EnvironmentVariables {
   @IsString()
   @IsNotEmpty()
   GOOGLE_SECRET!: string;
-
-  @IsString()
-  @IsNotEmpty()
-  GOOGLE_REDIRECT!: string;
 }
 
 export function validate(config: Record<string, unknown>) {

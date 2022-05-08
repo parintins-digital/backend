@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import type { ConfigService } from '@nestjs/config';
-import type { EnvironmentVariables } from './config/env.validation';
+import { ConfigService } from '@nestjs/config';
+
+import { EnvironmentVariables } from './config/env.validation';
 
 type AppVariables = Pick<EnvironmentVariables, 'APP_HOST' | 'APP_PORT'>;
 
