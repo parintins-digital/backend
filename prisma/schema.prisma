@@ -17,12 +17,15 @@ model User {
 }
 
 model Picture {
-  userId      Int      @id
-  title       String
+  id          Int      @default(autoincrement())
+  userId      Int
+  title       String   @unique
   description String   @default("")
   createdAt   DateTime @default(now())
   category    PictureCategory
   user        User     @relation(fields: [userId], references: [id])
+
+  @@id([id, userId])
 }
 
 enum PictureCategory {
