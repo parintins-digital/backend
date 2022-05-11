@@ -3,29 +3,36 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  id        Int      @default(autoincrement()) @id
+  id        Int      @id @default(autoincrement())
   firstName String
   lastName  String?
   email     String   @unique
   createdAt DateTime @default(now())
-  pictures  Picture[]
+  Visit     Visit[]
 }
 
 model Picture {
-  id          Int      @default(autoincrement())
-  userId      Int
-  title       String   @unique
-  description String   @default("")
-  createdAt   DateTime @default(now())
+  id          Int             @id @default(autoincrement())
+  title       String          @unique
+  description String          @default("")
+  createdAt   DateTime        @default(now())
   category    PictureCategory
-  user        User     @relation(fields: [userId], references: [id])
+  Visit       Visit[]
+}
 
-  @@id([id, userId])
+model Visit {
+  userId    Int
+  pictureId Int
+  visitedOn DateTime @default(now())
+
+  user    User    @relation(fields: [userId], references: [id])
+  picture Picture @relation(fields: [pictureId], references: [id])
+  @@id([userId, pictureId])
 }
 
 enum PictureCategory {
