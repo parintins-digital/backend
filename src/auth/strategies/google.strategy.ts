@@ -5,10 +5,10 @@ import { Strategy, StrategyOptions } from 'passport-google-oauth20';
 
 import { AuthConfigService } from '../auth.config.service';
 import { AuthService } from '../auth.service';
-import { GOOGLE_SCOPES } from '../auth.constants';
+import { GOOGLE_SCOPES, GOOGLE_STRATEGY } from '../auth.constants';
 
 @Injectable()
-export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
+export class GoogleStrategy extends PassportStrategy(Strategy, GOOGLE_STRATEGY) {
   constructor(private authService: AuthService, authConfig: AuthConfigService) {
     super({
       clientID: authConfig.googleId,
