@@ -2,16 +2,34 @@ import { Injectable } from '@nestjs/common';
 
 import { Prisma, User } from '@prisma/client';
 
-import { PrismaService } from '../database/prisma.service';
+import { PrismaService } from '../../database/prisma.service';
 
 @Injectable()
 export class UserService {
   constructor(private database: PrismaService) {}
 
-  async create(data: Prisma.UserCreateWithoutPicturesInput): Promise<User> {
+  async create(data: Prisma.UserCreateWithoutVisitInput): Promise<User> {
     const user = this.database.user.create({ data });
 
     return user;
+  }
+
+  async visit(
+    { userId, pictureId }: Prisma.VisitUserIdPictureIdCompoundUniqueInput,
+    visitedOn?: Date,
+  ) {
+    let data: Prisma.VisitCreateInput = {
+      picture: { connect: { id: pictureId } },
+      user: { connect: { id: userId } },
+    };
+
+    if (visitedOn !== undefined) {
+      data = { visitedOn, ...data };
+    }
+
+    const visit = this.database.visit.create({ data });
+
+    return visit;
   }
 
   async findAll(): Promise<User[]> {
@@ -28,7 +46,7 @@ export class UserService {
 
   async findOrCreate(
     where: Prisma.UserWhereUniqueInput,
-    create: Prisma.UserCreateWithoutPicturesInput,
+    create: Prisma.UserCreateWithoutVisitInput,
   ): Promise<User> {
     const user = this.database.user.upsert({
       create,
@@ -41,7 +59,7 @@ export class UserService {
 
   async update(
     where: Prisma.UserWhereUniqueInput,
-    data: Prisma.UserUpdateWithoutPicturesInput,
+    data: Prisma.UserUpdateWithoutVisitInput,
   ): Promise<User> {
     const user = this.database.user.update({ where, data });
 

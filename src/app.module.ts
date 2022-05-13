@@ -11,6 +11,7 @@ import { DatabaseModule } from './database/database.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
+      ignoreEnvFile: false,
       expandVariables: true,
       isGlobal: true,
       cache: true,

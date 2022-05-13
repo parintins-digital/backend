@@ -8,26 +8,26 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
+  id        String @db.Char(36) @id     @default(uuid())
   firstName String
   lastName  String?
-  email     String   @unique
-  createdAt DateTime @default(now())
+  email     String              @unique
+  createdAt DateTime                    @default(now())
   Visit     Visit[]
 }
 
 model Picture {
-  id          Int             @id @default(autoincrement())
-  title       String          @unique
-  description String          @default("")
-  createdAt   DateTime        @default(now())
+  id          String @db.Char(36) @id     @default(uuid())
+  title       String              @unique
+  description String                      @default("")           
+  createdAt   DateTime                    @default(now())
   category    PictureCategory
   Visit       Visit[]
 }
 
 model Visit {
-  userId    Int
-  pictureId Int
+  userId    String
+  pictureId String
   visitedOn DateTime @default(now())
 
   user    User    @relation(fields: [userId], references: [id])
