@@ -27,7 +27,7 @@ export class VisitService {
   }
 
   async findMany(where: Prisma.VisitScalarWhereInput): Promise<Visit[]> {
-    const visit = this.database.visit.findMany({where});
+    const visit = this.database.visit.findMany({ where });
 
     return visit;
   }
@@ -36,15 +36,17 @@ export class VisitService {
     userId_pictureId: Prisma.VisitUserIdPictureIdCompoundUniqueInput,
     data: Prisma.VisitUpdateInput,
   ): Promise<Visit> {
-    const where: Prisma.VisitWhereUniqueInput = {userId_pictureId};
-    const visit = this.database.visit.update({data, where});
+    const where: Prisma.VisitWhereUniqueInput = { userId_pictureId };
+    const visit = this.database.visit.update({ data, where });
 
     return visit;
   }
 
-  async remove(userId_pictureId: Prisma.VisitUserIdPictureIdCompoundUniqueInput): Promise<Visit> {
-    const where: Prisma.VisitWhereUniqueInput = {userId_pictureId};
-    const user = this.database.visit.delete({where});
+  async remove(
+    userId_pictureId: Prisma.VisitUserIdPictureIdCompoundUniqueInput,
+  ): Promise<Visit> {
+    const where: Prisma.VisitWhereUniqueInput = { userId_pictureId };
+    const user = this.database.visit.delete({ where });
 
     return user;
   }

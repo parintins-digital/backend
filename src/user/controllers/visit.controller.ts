@@ -23,8 +23,11 @@ export class VisitController {
   }
 
   @Patch()
-  update(@User('id') userId: string, @Body() {pictureId, visitedOn}: UpdateVisitDTO) {
-    return this.visitService.update({ userId, pictureId }, {visitedOn});
+  update(
+    @User('id') userId: string,
+    @Body() { pictureId, visitedOn }: UpdateVisitDTO,
+  ) {
+    return this.visitService.update({ userId, pictureId }, { visitedOn });
   }
 
   @Delete()
