@@ -5,4 +5,4 @@ export const GOOGLE_SCOPES = [
 
 export const GOOGLE_REDIRECT = 'oauth2/redirect/google';
 
-export const GOOGLE_STRATEGY = 'google-oauth20';
+export const GOOGLE_STRATEGY = 'google';
