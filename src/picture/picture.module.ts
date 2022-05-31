@@ -4,10 +4,15 @@ import { DatabaseModule } from '../database/database.module';
 
 import { PictureService } from './providers/picture.service';
 import { PictureController } from './controllers/picture.controller';
+import { MulterModule } from '@nestjs/platform-express';
+import { PictureConfigService } from './providers/picture.config.service';
 
 @Module({
-  imports: [DatabaseModule],
+  imports: [
+    DatabaseModule,
+    MulterModule.registerAsync({ useClass: PictureConfigService }),
+  ],
   controllers: [PictureController],
-  providers: [PictureService],
+  providers: [PictureService, PictureConfigService],
 })
 export class PictureModule {}

@@ -1,11 +1,14 @@
 import { plainToInstance, Type } from 'class-transformer';
 import {
   IsIn,
+  IsInt,
   IsNotEmpty,
   IsNumber,
+  IsPositive,
   IsString,
-  validateSync,
+  validate,
 } from 'class-validator';
+import { IsDirectory } from './decorators/directory.decorator';
 
 export class EnvironmentVariables {
   @IsIn(['development', 'production', 'test', 'provision'])
@@ -18,6 +21,10 @@ export class EnvironmentVariables {
   @IsNumber()
   @Type(() => Number)
   APP_PORT!: number;
+
+  @IsString()
+  @IsNotEmpty()
+  APP_LOGIN_REDIRECT!: string;
 
   @IsString()
   @IsNotEmpty()
@@ -50,12 +57,21 @@ export class EnvironmentVariables {
   @IsString()
   @IsNotEmpty()
   GOOGLE_SECRET!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @IsDirectory({ message: 'Path is not a valid absolute directory' })
+  PICTURE_UPLOAD!: string;
+
+  @IsInt()
+  @IsPositive()
+  @Type(() => Number)
+  PICTURE_LIMIT!: number;
 }
 
-export function validate(config: Record<string, unknown>) {
+export async function validateEnviroment(config: Record<string, unknown>) {
   const env = plainToInstance(EnvironmentVariables, config);
-
-  const errors = validateSync(env, { skipMissingProperties: false });
+  const errors = await validate(env, { skipMissingProperties: false });
 
   if (errors.length > 0) {
     throw new Error(errors.toString());

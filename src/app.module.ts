@@ -5,7 +5,7 @@ import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { PictureModule } from './picture/picture.module';
 import { AppConfigService } from './app.config.service';
-import { validate } from './config/env.validation';
+import { validateEnviroment } from './config/env.validation';
 import { DatabaseModule } from './database/database.module';
 
 @Module({
@@ -15,7 +15,7 @@ import { DatabaseModule } from './database/database.module';
       expandVariables: true,
       isGlobal: true,
       cache: true,
-      validate,
+      validate: validateEnviroment,
     }),
     UserModule,
     PictureModule,

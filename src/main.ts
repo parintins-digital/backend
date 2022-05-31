@@ -2,14 +2,18 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 
 import session from 'express-session';
+import { PrismaSessionStore } from '@quixo3/prisma-session-store';
 
-import { AppConfigService } from './app.config.service';
+import { PrismaService } from './database/prisma.service';
+
 import { AppModule } from './app.module';
+import { AppConfigService } from './app.config.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   const appConfig = app.get(AppConfigService);
+  const prismaClient = app.get(PrismaService);
 
   app.use(
     session({
@@ -17,10 +21,14 @@ async function bootstrap() {
       saveUninitialized: false,
       resave: false,
       cookie: {
-        maxAge: 1000 * 60 * 60 * 24,
+        maxAge: 1 * 60 * 60 * 1000,
         httpOnly: true,
         path: '/',
       },
+      store: new PrismaSessionStore(prismaClient, {
+        checkPeriod: 30 * 60 * 1000,
+        dbRecordIdIsSessionId: true,
+      }),
     }),
   );
 

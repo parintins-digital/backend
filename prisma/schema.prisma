@@ -12,6 +12,7 @@ model User {
   firstName String
   lastName  String?
   email     String              @unique
+  admin     Boolean                     @default(false)
   createdAt DateTime                    @default(now())
   Visit     Visit[]
 }
@@ -26,8 +27,8 @@ model Picture {
 }
 
 model Visit {
-  userId    String
-  pictureId String
+  userId    String   @db.Char(36)
+  pictureId String   @db.Char(36)
   visitedOn DateTime @default(now())
 
   user    User    @relation(fields: [userId], references: [id])
@@ -40,4 +41,11 @@ enum PictureCategory {
   CULTURE
   LANDMARK
   COMMUNITY
+}
+
+model Session {
+  id        String   @id
+  sid       String                @unique
+  data      String   @db.Text
+  expiresAt DateTime
 }

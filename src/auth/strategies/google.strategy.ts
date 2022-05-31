@@ -4,8 +4,8 @@ import { Injectable } from '@nestjs/common';
 import { Profile } from 'passport';
 import { Strategy, StrategyOptions } from 'passport-google-oauth20';
 
-import { AuthConfigService } from '../auth.config.service';
-import { AuthService } from '../auth.service';
+import { AuthConfigService } from '../providers/auth.config.service';
+import { AuthService } from '../providers/auth.service';
 import { GOOGLE_SCOPES, GOOGLE_STRATEGY } from '../auth.constants';
 import { User } from '@prisma/client';
 
@@ -31,7 +31,7 @@ export class GoogleStrategy extends PassportStrategy(
     const name = profile.displayName;
     const email = profile.emails?.[0]?.value!;
 
-    const user = await this.authService.login(name, email);
+    const user = await this.authService.login(email, name);
 
     return user;
   }
