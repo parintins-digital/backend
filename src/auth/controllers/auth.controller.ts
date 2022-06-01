@@ -10,6 +10,7 @@ import { RequestSession } from '../model/request-session';
 import { UserAccount } from '../model/user-account';
 import { GOOGLE_REDIRECT } from '../auth.constants';
 import { LocalAuth } from '../decorators/local-auth.decorator';
+import { AdminAuth } from '../decorators/admin-auth.decorator';
 
 @Controller()
 export class AuthController {
@@ -38,6 +39,17 @@ export class AuthController {
     @Account() userAccount: UserAccount,
     @Session() session: RequestSession,
   ) {
+    session.user = userAccount.userId;
+    session.admin = userAccount.admin;
+  }
+
+  @Post('login/admin')
+  @AdminAuth()
+  async adminLogin(
+    @Account() userAccount: UserAccount,
+    @Session() session: RequestSession,
+  ) {
+    session.cookie.maxAge = 10 * 60 * 1000;
     session.user = userAccount.userId;
     session.admin = userAccount.admin;
   }

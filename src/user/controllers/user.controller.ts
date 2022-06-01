@@ -40,6 +40,11 @@ export class UserController {
     return this.userService.findOne({ id });
   }
 
+  @Get('admin')
+  isCurrentUserAdmin(@Session() session: RequestSession) {
+    return session.admin;
+  }
+
   @Patch()
   update(@Session() session: RequestSession, @Body() body: UpdateUserDTO) {
     const id = session.user;
@@ -50,7 +55,7 @@ export class UserController {
   @Delete()
   remove(@Session() session: RequestSession) {
     const id = session.user;
-    
+
     return this.userService.remove({ id });
   }
 }

@@ -25,7 +25,8 @@ export class AccountService {
   }
 
   async findOAuthAccount(where: Prisma.OAuthAccountWhereUniqueInput) {
-    const account = this.database.oAuthAccount.findUnique({ where });
+    const account = this.database.oAuthAccount.findFirst({ 
+      where: { ...where, admin: false }, });
 
     return account;
   }
@@ -47,7 +48,17 @@ export class AccountService {
   }
 
   async findLocalAccount(where: Prisma.LocalAccountWhereUniqueInput) {
-    const account = this.database.localAccount.findUnique({ where });
+    const account = this.database.localAccount.findFirst({
+      where: { ...where, admin: false },
+    });
+
+    return account;
+  }
+
+  async findAdminAccount(where: Prisma.LocalAccountWhereUniqueInput) {
+    const account = this.database.localAccount.findFirst({
+      where: { ...where, admin: true },
+    });
 
     return account;
   }

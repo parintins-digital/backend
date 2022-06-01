@@ -1,7 +1,7 @@
 import { applyDecorators, UseGuards } from '@nestjs/common';
 
-import { GoogleOAuthGuard } from '../guards/google-auth.guard';
+import { LocalAuthGuard } from '../guards/local-auth.guard';
 
 export function LocalAuth() {
-  return applyDecorators(UseGuards(GoogleOAuthGuard));
+  return applyDecorators(UseGuards(LocalAuthGuard));
 }
