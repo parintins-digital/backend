@@ -24,7 +24,11 @@ export class EnvironmentVariables {
 
   @IsString()
   @IsNotEmpty()
-  APP_DOMAIN!: string;
+  APP_API_DOMAIN!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  APP_CLIENT_URL!: string;
 
   @IsString()
   @IsNotEmpty()

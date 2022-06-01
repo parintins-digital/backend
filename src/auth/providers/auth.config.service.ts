@@ -6,10 +6,7 @@ import { GOOGLE_REDIRECT } from '../auth.constants';
 
 type AuthVariables = Pick<
   EnvironmentVariables,
-  | 'APP_DOMAIN'
-  | 'APP_LOGIN_REDIRECT'
-  | 'GOOGLE_CLIENT'
-  | 'GOOGLE_SECRET'
+  'APP_API_DOMAIN' | 'APP_LOGIN_REDIRECT' | 'GOOGLE_CLIENT' | 'GOOGLE_SECRET'
 >;
 
 @Injectable()
@@ -27,7 +24,7 @@ export class AuthConfigService {
   }
 
   get googleRedirectUrl(): string {
-    const domain = this.configService.get('APP_DOMAIN', { infer: true });
+    const domain = this.configService.get('APP_API_DOMAIN', { infer: true });
 
     const redirect = `http://${domain}/${GOOGLE_REDIRECT}`;
     return redirect;
