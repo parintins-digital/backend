@@ -6,8 +6,7 @@ import { GOOGLE_REDIRECT } from '../auth.constants';
 
 type AuthVariables = Pick<
   EnvironmentVariables,
-  | 'APP_HOST'
-  | 'APP_PORT'
+  | 'APP_DOMAIN'
   | 'APP_LOGIN_REDIRECT'
   | 'GOOGLE_CLIENT'
   | 'GOOGLE_SECRET'
@@ -28,10 +27,9 @@ export class AuthConfigService {
   }
 
   get googleRedirectUrl(): string {
-    const port = this.configService.get('APP_PORT', { infer: true });
-    const host = this.configService.get('APP_HOST', { infer: true });
+    const domain = this.configService.get('APP_DOMAIN', { infer: true });
 
-    const redirect = `http://${host}:${port}/${GOOGLE_REDIRECT}`;
+    const redirect = `http://${domain}/${GOOGLE_REDIRECT}`;
     return redirect;
   }
 

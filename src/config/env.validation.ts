@@ -24,6 +24,10 @@ export class EnvironmentVariables {
 
   @IsString()
   @IsNotEmpty()
+  APP_DOMAIN!: string;
+
+  @IsString()
+  @IsNotEmpty()
   APP_LOGIN_REDIRECT!: string;
 
   @IsString()
