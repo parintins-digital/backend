@@ -11,7 +11,7 @@ import {
 import { UserService } from '../providers/user.service';
 import { CreateUserDTO } from '../dto/user/create-user.dto';
 import { UpdateUserDTO } from '../dto/user/update-user.dto';
-import { RequestSession } from 'src/auth/model/user-session';
+import { RequestSession } from 'src/auth/model/request-session';
 import { Authenticated } from 'src/auth/decorators/authenticated.decorator';
 import { Administrator } from 'src/auth/decorators/admin.decorator';
 
@@ -34,16 +34,14 @@ export class UserController {
   }
 
   @Patch()
-  update(
-    @Session() session: RequestSession, @Body() body: UpdateUserDTO) {
+  update(@Session() session: RequestSession, @Body() body: UpdateUserDTO) {
     const id = session.user;
     return this.userService.update({ id }, body);
   }
 
   @Delete()
-  remove(
-    @Session() session: RequestSession) {
-      const id = session.user;
+  remove(@Session() session: RequestSession) {
+    const id = session.user;
     return this.userService.remove({ id });
   }
 }

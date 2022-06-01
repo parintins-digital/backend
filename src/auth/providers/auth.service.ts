@@ -1,34 +1,57 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 
-import { User } from '@prisma/client';
+import { LocalAccount, OAuthAccount } from '@prisma/client';
+import { compare } from 'bcrypt';
+import { Profile } from 'passport';
 
-import { UserService } from '../../user/providers/user.service';
+import { AccountService } from 'src/user/providers/account.service';
+import { UserService } from 'src/user/providers/user.service';
 
 @Injectable()
 export class AuthService {
-  constructor(private userService: UserService) {}
+  constructor(
+    private userService: UserService,
+    private accountService: AccountService,
+  ) {}
 
-  async login(email: string, name: string): Promise<User> {
-    const [first, lastName] = this.splitName(name);
-    const firstName = first ?? name;
+  async oauthLogin(profile: Profile): Promise<OAuthAccount> {
+    let account = await this.accountService.findOAuthAccount({
+      subject: profile.id,
+    });
 
-    const user = this.userService.findOrCreate(
-      { email },
-      {
-        email,
-        firstName,
-        lastName,
-      },
-    );
+    if (account == null) {
+      const firstName = profile.name?.givenName ?? profile.displayName;
+      const lastName = profile.name?.familyName;
 
-    return user;
+      const { id } = await this.userService.create({ firstName, lastName });
+      account = await this.accountService.createOAuthAccount(
+        {
+          provider: profile.provider,
+          subject: profile.id,
+        },
+        { id },
+      );
+    }
+
+    return account;
   }
 
-  private splitName(name: string): string[] {
-    const [head, ...tail] = name.split(' ').filter((name) => name.trim());
-    const firstName = head ?? name;
-    const lastName = tail.join(' ');
+  async localLogin(email: string, password: string): Promise<LocalAccount> {
+    let account = await this.accountService.findLocalAccount({
+      email,
+    });
 
-    return [firstName, lastName];
+    // Email não registrado
+    if (account == null) {
+      throw new UnauthorizedException();
+    }
+
+    const match = await compare(password, account.password.toString());
+
+    if (!match) {
+      throw new UnauthorizedException();
+    }
+
+    return account;
   }
 }

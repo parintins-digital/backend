@@ -2,7 +2,7 @@ import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 
 import { Observable } from 'rxjs';
 
-import { RequestSession } from '../model/user-session';
+import { RequestSession } from '../model/request-session';
 
 @Injectable()
 export class SessionGuard implements CanActivate {

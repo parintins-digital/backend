@@ -11,7 +11,7 @@ import {
 import { VisitService } from '../providers/visit.service';
 import { CreateVisitDTO } from '../dto/visit/create-visit.dto';
 import { UpdateVisitDTO } from '../dto/visit/update-visit.dto';
-import { RequestSession } from 'src/auth/model/user-session';
+import { RequestSession } from 'src/auth/model/request-session';
 import { Authenticated } from 'src/auth/decorators/authenticated.decorator';
 
 @Controller('user/visit')

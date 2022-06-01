@@ -6,3 +6,4 @@ export const GOOGLE_SCOPES = [
 export const GOOGLE_REDIRECT = 'oauth2/redirect/google';
 
 export const GOOGLE_STRATEGY = 'google';
+export const LOCAL_STRATEGY = 'local';

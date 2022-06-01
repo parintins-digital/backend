@@ -6,8 +6,8 @@ import { Strategy, StrategyOptions } from 'passport-google-oauth20';
 
 import { AuthConfigService } from '../providers/auth.config.service';
 import { AuthService } from '../providers/auth.service';
+import { UserAccount } from '../model/user-account';
 import { GOOGLE_SCOPES, GOOGLE_STRATEGY } from '../auth.constants';
-import { User } from '@prisma/client';
 
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(
@@ -27,12 +27,9 @@ export class GoogleStrategy extends PassportStrategy(
     _accessToken: string,
     _refreshToken: string,
     profile: Profile,
-  ): Promise<User> {
-    const name = profile.displayName;
-    const email = profile.emails?.[0]?.value!;
+  ): Promise<UserAccount> {
+    const userAccount = await this.authService.oauthLogin(profile);
 
-    const user = await this.authService.login(email, name);
-
-    return user;
+    return userAccount;
   }
 }

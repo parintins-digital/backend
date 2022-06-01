@@ -1,14 +1,15 @@
-import { Controller, Get, Res, Session } from '@nestjs/common';
-import { User as RequestUser } from '@prisma/client';
+import { Controller, Get, Post, Res, Session } from '@nestjs/common';
 
 import { Response } from 'express';
 
-import { User } from '../decorators/user.decorator';
-import { GoogleAuth } from '../decorators/login.decorator';
+import { Account } from '../decorators/account.decorator';
+import { GoogleAuth } from '../decorators/oauth-auth.decorator';
 
 import { AuthConfigService } from '../providers/auth.config.service';
+import { RequestSession } from '../model/request-session';
+import { UserAccount } from '../model/user-account';
 import { GOOGLE_REDIRECT } from '../auth.constants';
-import { RequestSession } from '../model/user-session';
+import { LocalAuth } from '../decorators/local-auth.decorator';
 
 @Controller()
 export class AuthController {
@@ -16,17 +17,28 @@ export class AuthController {
 
   @Get('login')
   @GoogleAuth()
-  async login() {}
+  async oAuthLogin() {}
 
   @Get(GOOGLE_REDIRECT)
   @GoogleAuth()
-  async redirect(
-    @User() user: RequestUser,
+  async googleAuthRedirect(
+    @Account() userAccount: UserAccount,
     @Session() session: RequestSession,
     @Res() res: Response,
   ) {
-    session.user = user.id;
-    session.admin = user.admin;
-    res.redirect(this.authConfig.loginRedirectUrl);
+    session.user = userAccount.userId;
+    session.admin = userAccount.admin;
+
+    return res.redirect(this.authConfig.loginRedirectUrl);
+  }
+
+  @Post('login')
+  @LocalAuth()
+  async localLogin(
+    @Account() userAccount: UserAccount,
+    @Session() session: RequestSession,
+  ) {
+    session.user = userAccount.userId;
+    session.admin = userAccount.admin;
   }
 }
