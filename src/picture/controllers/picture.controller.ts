@@ -9,13 +9,16 @@ import {
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+
+import { Administrator } from 'src/auth/decorators/admin.decorator';
+import { Authenticated } from 'src/auth/decorators/authenticated.decorator';
 
 import { PictureService } from '../providers/picture.service';
 import { CreatePictureDto } from '../dto/create-picture.dto';
 import { UpdatePictureDto } from '../dto/update-picture.dto';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { Administrator } from 'src/auth/decorators/admin.decorator';
-import { Authenticated } from 'src/auth/decorators/authenticated.decorator';
+
+import { join } from 'path';
 
 @Controller('picture')
 @Authenticated()
@@ -29,7 +32,7 @@ export class PictureController {
     @UploadedFile() image: Express.Multer.File,
     @Body() dto: CreatePictureDto,
   ) {
-    image.filename = dto.title;
+    image.destination = join(image.destination, dto.category);
     return this.pictureService.create(dto);
   }
 
