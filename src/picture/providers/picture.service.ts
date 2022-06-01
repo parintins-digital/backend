@@ -1,12 +1,18 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 
-import { Prisma } from '@prisma/client';
+import { Picture, Prisma } from '@prisma/client';
+import { unlink } from 'fs/promises';
+import { join } from 'path';
 
 import { PrismaService } from '../../database/prisma.service';
+import { PictureConfigService } from './picture.config.service';
 
 @Injectable()
 export class PictureService {
-  constructor(private database: PrismaService) {}
+  constructor(
+    private database: PrismaService,
+    private readonly configService: PictureConfigService,
+  ) {}
 
   async create(data: Prisma.PictureCreateWithoutVisitInput) {
     const picture = this.database.picture.create({ data });
@@ -39,8 +45,24 @@ export class PictureService {
   }
 
   async remove(where: Prisma.PictureWhereUniqueInput) {
-    const picture = this.database.picture.delete({ where });
+    const picture = await this.database.picture.delete({ where });
+
+    await this.removeImage(picture);
 
     return picture;
+  }
+
+  async removeImage(picture: Picture) {
+    try {
+      await unlink(
+        join(
+          this.configService.pictureUploadDestination,
+          picture.category,
+          picture.id,
+        ),
+      );
+    } catch {
+      throw new BadRequestException();
+    }
   }
 }

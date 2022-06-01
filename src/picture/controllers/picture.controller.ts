@@ -31,12 +31,12 @@ export class PictureController {
   @UseInterceptors(FileInterceptor('image'))
   @Admin()
   async create(
-    @UploadedFile() image: Express.Multer.File,
     @Body() dto: CreatePictureDto,
+    @UploadedFile() image: Express.Multer.File,
   ) {
     const picture = await this.pictureService.create(dto);
 
-    image.destination = join(image.destination, dto.category);
+    image.destination = join(image.destination, picture.category);
     image.fieldname = picture.id;
 
     return picture;
@@ -69,9 +69,19 @@ export class PictureController {
   }
 
   @Patch(':id')
+  @UseInterceptors(FileInterceptor('image'))
   @Admin()
-  update(@Param('id') id: string, @Body() dto: UpdatePictureDto) {
-    return this.pictureService.update({ id }, dto);
+  async update(
+    @Param('id') id: string,
+    @Body() dto: UpdatePictureDto,
+    @UploadedFile() image: Express.Multer.File,
+  ) {
+    const picture = await this.pictureService.update({ id }, dto);
+
+    image.destination = join(image.destination, picture.category);
+    image.fieldname = picture.id;
+
+    return picture;
   }
 
   @Delete(':id')
