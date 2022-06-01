@@ -30,12 +30,16 @@ export class PictureController {
   @Post()
   @UseInterceptors(FileInterceptor('image'))
   @Admin()
-  create(
+  async create(
     @UploadedFile() image: Express.Multer.File,
     @Body() dto: CreatePictureDto,
   ) {
+    const picture = await this.pictureService.create(dto);
+
     image.destination = join(image.destination, dto.category);
-    return this.pictureService.create(dto);
+    image.fieldname = picture.id;
+
+    return picture;
   }
 
   @Get()
@@ -45,7 +49,7 @@ export class PictureController {
     @Query('title') title?: string,
   ) {
     let createdAt;
-    if (date != null) {
+    if (date instanceof Date && !isNaN(date.getTime())) {
       createdAt = {
         gte: new Date(
           Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()),

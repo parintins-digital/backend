@@ -38,7 +38,7 @@ export class VisitController {
     const userId = session.user;
 
     let visitedOn;
-    if (date != null) {
+    if (date instanceof Date && !isNaN(date.getTime())) {
       visitedOn = {
         gte: new Date(
           Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()),
