@@ -13,7 +13,7 @@ import { CreateUserDTO } from '../dto/user/create-user.dto';
 import { UpdateUserDTO } from '../dto/user/update-user.dto';
 import { RequestSession } from 'src/auth/model/request-session';
 import { Authenticated } from 'src/auth/decorators/authenticated.decorator';
-import { Administrator } from 'src/auth/decorators/admin.decorator';
+import { hash } from 'bcrypt';
 
 @Controller('user')
 @Authenticated()
@@ -21,14 +21,21 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
-  @Administrator()
-  create(@Body() body: CreateUserDTO) {
-    return this.userService.create(body);
+  async create(
+    @Body() { firstName, lastName, email, password }: CreateUserDTO,
+  ) {
+    const hashedPassword = Buffer.from(await hash(password, 10), 'utf-8');
+
+    return this.userService.create({
+      firstName,
+      lastName,
+      localAccount: { create: { email, password: hashedPassword } },
+    });
   }
 
   @Get()
   findCurrentUser(@Session() session: RequestSession) {
-    const { user: id } = session;
+    const id = session.user;
 
     return this.userService.findOne({ id });
   }
@@ -36,12 +43,14 @@ export class UserController {
   @Patch()
   update(@Session() session: RequestSession, @Body() body: UpdateUserDTO) {
     const id = session.user;
+
     return this.userService.update({ id }, body);
   }
 
   @Delete()
   remove(@Session() session: RequestSession) {
     const id = session.user;
+    
     return this.userService.remove({ id });
   }
 }

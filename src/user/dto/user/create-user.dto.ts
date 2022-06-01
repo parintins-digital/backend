@@ -11,9 +11,19 @@ export class CreateUserDTO {
   @IsEmail()
   email: string;
 
-  constructor(firstName: string, email: string, lastName?: string) {
+  @IsString()
+  @IsNotEmpty()
+  password: string;
+
+  constructor(
+    firstName: string,
+    email: string,
+    password: string,
+    lastName?: string,
+  ) {
     this.firstName = firstName;
     this.email = email;
+    this.password = password;
 
     if (lastName) this.lastName = lastName;
   }

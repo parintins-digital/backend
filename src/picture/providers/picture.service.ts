@@ -14,8 +14,8 @@ export class PictureService {
     return picture;
   }
 
-  async findAll() {
-    const picture = this.database.picture.findMany();
+  async findMany(where: Prisma.PictureWhereInput) {
+    const picture = this.database.picture.findMany({ where });
 
     return picture;
   }

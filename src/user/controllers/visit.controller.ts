@@ -6,6 +6,7 @@ import {
   Patch,
   Delete,
   Session,
+  Query,
 } from '@nestjs/common';
 
 import { VisitService } from '../providers/visit.service';
@@ -29,9 +30,31 @@ export class VisitController {
   }
 
   @Get()
-  findHistory(@Session() session: RequestSession) {
+  findHistory(
+    @Session() session: RequestSession,
+    @Query('visitedOn') date?: Date,
+    @Query('title') title?: string,
+  ) {
     const userId = session.user;
-    return this.visitService.findMany({ userId });
+
+    let visitedOn;
+    if (date != null) {
+      visitedOn = {
+        gte: new Date(
+          Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()),
+        ),
+        lte: new Date(
+          Date.UTC(date.getFullYear(), date.getMonth(), date.getDate() + 1),
+        ),
+      };
+    }
+
+    let picture;
+    if (title != null) {
+      picture = { title };
+    }
+
+    return this.visitService.findMany({ userId, visitedOn, picture });
   }
 
   @Patch()

@@ -26,7 +26,7 @@ export class VisitService {
     return visit;
   }
 
-  async findMany(where: Prisma.VisitScalarWhereInput): Promise<Visit[]> {
+  async findMany(where: Prisma.VisitWhereInput): Promise<Visit[]> {
     const visit = this.database.visit.findMany({ where });
 
     return visit;

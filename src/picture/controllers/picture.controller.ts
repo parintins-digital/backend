@@ -8,6 +8,7 @@ import {
   Delete,
   UploadedFile,
   UseInterceptors,
+  Query,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 
@@ -19,6 +20,7 @@ import { CreatePictureDto } from '../dto/create-picture.dto';
 import { UpdatePictureDto } from '../dto/update-picture.dto';
 
 import { join } from 'path';
+import { PictureCategory } from '@prisma/client';
 
 @Controller('picture')
 @Authenticated()
@@ -37,8 +39,24 @@ export class PictureController {
   }
 
   @Get()
-  findAll() {
-    return this.pictureService.findAll();
+  findMany(
+    @Query('category') category?: PictureCategory,
+    @Query('visitedOn') date?: Date,
+    @Query('title') title?: string,
+  ) {
+    let createdAt;
+    if (date != null) {
+      createdAt = {
+        gte: new Date(
+          Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()),
+        ),
+        lte: new Date(
+          Date.UTC(date.getFullYear(), date.getMonth(), date.getDate() + 1),
+        ),
+      };
+    }
+
+    return this.pictureService.findMany({ category, createdAt, title });
   }
 
   @Get(':id')
