@@ -15,18 +15,24 @@ async function bootstrap() {
   const appConfig = app.get(AppConfigService);
   const prismaClient = app.get(PrismaService);
 
+  const origin = appConfig.clientUrl;
+  app.enableCors({ credentials: true, origin });
+
   app.use(
     session({
       secret: 'secret',
       saveUninitialized: false,
       resave: false,
+      unset: 'destroy',
+      proxy: false,
       cookie: {
         maxAge: 1 * 60 * 60 * 1000,
         httpOnly: true,
+        secure: false,
         path: '/',
       },
       store: new PrismaSessionStore(prismaClient, {
-        checkPeriod: 30 * 60 * 1000,
+        checkPeriod: 5 * 60 * 1000,
         dbRecordIdIsSessionId: true,
       }),
     }),

@@ -25,8 +25,9 @@ export class AccountService {
   }
 
   async findOAuthAccount(where: Prisma.OAuthAccountWhereUniqueInput) {
-    const account = this.database.oAuthAccount.findFirst({ 
-      where: { ...where, admin: false }, });
+    const account = this.database.oAuthAccount.findFirst({
+      where: { ...where, admin: false },
+    });
 
     return account;
   }

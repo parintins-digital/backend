@@ -9,6 +9,7 @@ import { LocalAuthGuard } from './guards/local-auth.guard';
 import { GoogleOAuthGuard } from './guards/google-auth.guard';
 import { LocalStrategy } from './strategies/local.strategy';
 import { GoogleStrategy } from './strategies/google.strategy';
+import { AdminStrategy } from './strategies/admin.strategy';
 
 @Module({
   imports: [UserModule],
@@ -20,6 +21,7 @@ import { GoogleStrategy } from './strategies/google.strategy';
     GoogleOAuthGuard,
     LocalStrategy,
     GoogleStrategy,
+    AdminStrategy,
   ],
 })
 export class AuthModule {}

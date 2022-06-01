@@ -58,8 +58,8 @@ export class AuthService {
   async adminLogin(email: string, password: string): Promise<LocalAccount> {
     let account = await this.accountService.findAdminAccount({
       email,
-    })
-    
+    });
+
     // Email não registrado
     if (account == null) {
       throw new UnauthorizedException();
