@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 
-import { Administrator } from 'src/auth/decorators/admin.decorator';
+import { Admin } from 'src/auth/decorators/admin.decorator';
 import { Authenticated } from 'src/auth/decorators/authenticated.decorator';
 
 import { PictureService } from '../providers/picture.service';
@@ -29,7 +29,7 @@ export class PictureController {
 
   @Post()
   @UseInterceptors(FileInterceptor('image'))
-  @Administrator()
+  @Admin()
   create(
     @UploadedFile() image: Express.Multer.File,
     @Body() dto: CreatePictureDto,
@@ -65,13 +65,13 @@ export class PictureController {
   }
 
   @Patch(':id')
-  @Administrator()
+  @Admin()
   update(@Param('id') id: string, @Body() dto: UpdatePictureDto) {
     return this.pictureService.update({ id }, dto);
   }
 
   @Delete(':id')
-  @Administrator()
+  @Admin()
   remove(@Param('id') id: string) {
     return this.pictureService.remove({ id });
   }
