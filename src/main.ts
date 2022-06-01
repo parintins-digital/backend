@@ -24,11 +24,11 @@ async function bootstrap() {
       saveUninitialized: false,
       resave: false,
       unset: 'destroy',
-      proxy: false,
+      proxy: true,
       cookie: {
         maxAge: 1 * 60 * 60 * 1000,
         httpOnly: true,
-        secure: false,
+        secure: true,
         path: '/',
       },
       store: new PrismaSessionStore(prismaClient, {
