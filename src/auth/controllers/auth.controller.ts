@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Res, Session } from '@nestjs/common';
+import { Controller, Delete, Get, Post, Res, Session } from '@nestjs/common';
 
 import { Response } from 'express';
 
@@ -52,5 +52,10 @@ export class AuthController {
     session.cookie.maxAge = 10 * 60 * 1000;
     session.user = userAccount.userId;
     session.admin = userAccount.admin;
+  }
+
+  @Delete('logout')
+  async logout(@Session() session: RequestSession) {
+    session.destroy((err) => console.log(err));
   }
 }
