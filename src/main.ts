@@ -40,6 +40,7 @@ async function bootstrap() {
       store: new PrismaSessionStore(prismaClient, {
         checkPeriod: 5 * 60 * 1000,
         dbRecordIdIsSessionId: true,
+        ttl: 2 * 60 * 60 * 1000
       }),
     }),
   );
