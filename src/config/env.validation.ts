@@ -6,6 +6,7 @@ import {
   IsNumber,
   IsPositive,
   IsString,
+  MinLength,
   validate,
 } from 'class-validator';
 import { IsDirectory } from './decorators/directory.decorator';
@@ -33,6 +34,11 @@ export class EnvironmentVariables {
   @IsString()
   @IsNotEmpty()
   APP_LOGIN_REDIRECT!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @MinLength(16)
+  APP_SESSION_SECRET!: string;
 
   @IsString()
   @IsNotEmpty()

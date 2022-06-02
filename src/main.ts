@@ -17,19 +17,21 @@ async function bootstrap() {
   const prismaClient = app.get(PrismaService);
 
   const origin = appConfig.clientUrl;
+  const secret = appConfig.secret;
 
   app.set('trust proxy');
   app.enableCors({ credentials: true, origin });
 
   app.use(
     session({
-      secret: 'secret',
+      secret,
       saveUninitialized: false,
       resave: false,
+      rolling: true,
       unset: 'destroy',
       proxy: true,
       cookie: {
-        maxAge: 1 * 60 * 60 * 1000,
+        maxAge: 20 * 60 * 1000,
         httpOnly: true,
         secure: true,
         sameSite: 'strict',
