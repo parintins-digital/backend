@@ -27,10 +27,9 @@ export class AuthController {
     @Session() session: RequestSession,
     @Res() res: Response,
   ) {
-    session.regenerate((err) => console.log(err));
     session.user = userAccount.userId;
     session.admin = userAccount.admin;
-    session.save((err) => console.log(err));
+    session.save((err) => err != null ? console.log(err) : err);
 
     return res.redirect(this.authConfig.loginRedirectUrl);
   }
@@ -41,7 +40,6 @@ export class AuthController {
     @Account() userAccount: UserAccount,
     @Session() session: RequestSession,
   ) {
-    session.regenerate((err) => console.log(err));
     session.user = userAccount.userId;
     session.admin = userAccount.admin;
   }
@@ -52,13 +50,12 @@ export class AuthController {
     @Account() userAccount: UserAccount,
     @Session() session: RequestSession,
   ) {
-    session.regenerate((err) => console.log(err));
     session.user = userAccount.userId;
     session.admin = userAccount.admin;
   }
 
   @Delete('logout')
   async logout(@Session() session: RequestSession) {
-    session.destroy((err) => console.log(err));
+    session.destroy((err) => err != null ? console.log(err) : err);
   }
 }
