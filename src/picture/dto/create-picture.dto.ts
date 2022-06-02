@@ -1,5 +1,5 @@
 import { PictureCategory } from '@prisma/client';
-import { IsIn, IsNotEmpty, IsString, MaxLength, NotEquals } from 'class-validator';
+import { IsIn, IsNotEmpty, IsString, MaxLength, ValidateIf } from 'class-validator';
 
 export class CreatePictureDto {
   @IsString()
@@ -7,9 +7,9 @@ export class CreatePictureDto {
   title: string;
 
   @IsString()
-  @NotEquals(null)
   @MaxLength(1500)
-  description?: string = '';
+  @ValidateIf((_, value) => value !== undefined)
+  description: string = '';
 
   @IsString()
   @IsIn(['ATTRACTION', 'CULTURE', 'LANDMARK', 'COMMUNITY'])
