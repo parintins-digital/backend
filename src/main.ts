@@ -8,14 +8,17 @@ import { PrismaService } from './database/prisma.service';
 
 import { AppModule } from './app.module';
 import { AppConfigService } from './app.config.service';
+import { NestExpressApplication } from '@nestjs/platform-express';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  
   const appConfig = app.get(AppConfigService);
   const prismaClient = app.get(PrismaService);
 
   const origin = appConfig.clientUrl;
+
+  app.set('trust proxy');
   app.enableCors({ credentials: true, origin });
 
   app.use(
