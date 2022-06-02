@@ -20,7 +20,7 @@ model User {
 model Picture {
   id          String @db.Char(36) @id     @default(uuid())
   title       String              @unique
-  description String                      @default("")           
+  description String @db.Text             @default("")           
   createdAt   DateTime                    @default(now())
   filename    String
   category    PictureCategory
