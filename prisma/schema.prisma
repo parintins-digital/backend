@@ -22,6 +22,7 @@ model Picture {
   title       String              @unique
   description String                      @default("")           
   createdAt   DateTime                    @default(now())
+  filename    String
   category    PictureCategory
   Visit       Visit[]
 }

@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 
-import { Picture, Prisma } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { unlink } from 'fs/promises';
 import { join } from 'path';
 
@@ -36,7 +36,17 @@ export class PictureService {
     where: Prisma.PictureWhereUniqueInput,
     data: Prisma.PictureUpdateWithoutVisitInput,
   ) {
-    const picture = this.database.picture.update({
+    if (data.filename != null) {
+      const oldPicture = await this.database.picture.findFirst({where})
+
+      if (oldPicture == null) {
+        return oldPicture;
+      }
+
+      await this.removeImage(oldPicture.filename);
+    }
+
+    const picture = await this.database.picture.update({
       where,
       data,
     });
@@ -47,18 +57,17 @@ export class PictureService {
   async remove(where: Prisma.PictureWhereUniqueInput) {
     const picture = await this.database.picture.delete({ where });
 
-    await this.removeImage(picture);
+    await this.removeImage(picture.filename);
 
     return picture;
   }
 
-  async removeImage(picture: Picture) {
+  async removeImage(filename: string) {
     try {
       await unlink(
         join(
           this.configService.pictureUploadDestination,
-          picture.category,
-          picture.id,
+          filename,
         ),
       );
     } catch {

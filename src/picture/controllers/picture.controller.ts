@@ -19,7 +19,6 @@ import { PictureService } from '../providers/picture.service';
 import { CreatePictureDto } from '../dto/create-picture.dto';
 import { UpdatePictureDto } from '../dto/update-picture.dto';
 
-import { join } from 'path';
 import { PictureCategory } from '@prisma/client';
 
 @Controller('picture')
@@ -34,10 +33,9 @@ export class PictureController {
     @Body() dto: CreatePictureDto,
     @UploadedFile() image: Express.Multer.File,
   ) {
-    const picture = await this.pictureService.create(dto);
+    const data = {...dto, filename: image.filename};
 
-    image.destination = join(image.destination, picture.category);
-    image.fieldname = picture.id;
+    const picture = await this.pictureService.create(data);
 
     return picture;
   }
@@ -74,12 +72,11 @@ export class PictureController {
   async update(
     @Param('id') id: string,
     @Body() dto: UpdatePictureDto,
-    @UploadedFile() image: Express.Multer.File,
+    @UploadedFile() image?: Express.Multer.File,
   ) {
-    const picture = await this.pictureService.update({ id }, dto);
-
-    image.destination = join(image.destination, picture.category);
-    image.fieldname = picture.id;
+    const data = {...dto, filename: image?.filename};
+   
+    const picture = await this.pictureService.update({ id }, data);
 
     return picture;
   }
