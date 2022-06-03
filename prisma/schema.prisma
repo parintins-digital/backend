@@ -23,6 +23,7 @@ model Picture {
   description String @db.Text          
   createdAt   DateTime                    @default(now())
   filename    String
+  author      String
   category    PictureCategory
   Visit       Visit[]
 }

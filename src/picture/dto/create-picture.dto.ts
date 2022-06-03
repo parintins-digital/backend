@@ -15,9 +15,14 @@ export class CreatePictureDto {
   @IsIn(['ATTRACTION', 'CULTURE', 'LANDMARK', 'COMMUNITY'])
   category: PictureCategory;
 
-  constructor(title: string, category: PictureCategory, description?: string) {
+  @IsString()
+  @IsNotEmpty()
+  author: string;
+
+  constructor(title: string, category: PictureCategory, author: string, description?: string) {
     this.title = title;
     this.category = category;
+    this.author = author;
 
     if (description) this.description = description;
   }
