@@ -27,7 +27,7 @@ export class PictureService {
   }
 
   async findOne(where: Prisma.PictureWhereUniqueInput) {
-    const picture = this.database.picture.findFirst({ where });
+    const picture = this.database.picture.findUnique({ where });
 
     return picture;
   }
@@ -46,7 +46,7 @@ export class PictureService {
       await this.removeImage(oldPicture.filename);
     }
 
-    const picture = await this.database.picture.update({
+    const picture = this.database.picture.update({
       where,
       data,
     });

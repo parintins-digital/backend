@@ -9,6 +9,7 @@ import {
   UploadedFile,
   UseInterceptors,
   Query,
+  BadRequestException,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 
@@ -33,6 +34,10 @@ export class PictureController {
     @Body() dto: CreatePictureDto,
     @UploadedFile() image: Express.Multer.File,
   ) {
+    if(image == null) {
+      throw new BadRequestException('An image must be uploaded to create a picture.')
+    }
+
     const data = {...dto, filename: image.filename};
 
     const picture = await this.pictureService.create(data);
