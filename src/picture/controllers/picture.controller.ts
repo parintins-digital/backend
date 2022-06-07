@@ -10,6 +10,7 @@ import {
   UseInterceptors,
   Query,
   BadRequestException,
+  Session,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 
@@ -21,6 +22,7 @@ import { CreatePictureDto } from '../dto/create-picture.dto';
 import { UpdatePictureDto } from '../dto/update-picture.dto';
 
 import { PictureCategory } from '@prisma/client';
+import { RequestSession } from 'src/auth/model/request-session';
 
 @Controller('picture')
 @Authenticated()
@@ -34,11 +36,13 @@ export class PictureController {
     @Body() dto: CreatePictureDto,
     @UploadedFile() image: Express.Multer.File,
   ) {
-    if(image == null) {
-      throw new BadRequestException('An image must be uploaded to create a picture.')
+    if (image == null) {
+      throw new BadRequestException(
+        'An image must be uploaded to create a picture.',
+      );
     }
 
-    const data = {...dto, filename: image.filename};
+    const data = { ...dto, filename: image.filename };
 
     const picture = await this.pictureService.create(data);
 
@@ -46,11 +50,14 @@ export class PictureController {
   }
 
   @Get()
-  findMany(
+  async findMany(
+    @Session() session: RequestSession,
     @Query('category') category?: PictureCategory,
     @Query('visitedOn') date?: Date,
     @Query('title') title?: string,
   ) {
+    const id = session.user;
+
     let createdAt;
     if (date instanceof Date && !isNaN(date.getTime())) {
       createdAt = {
@@ -63,7 +70,17 @@ export class PictureController {
       };
     }
 
-    return this.pictureService.findMany({ category, createdAt, title });
+    const pictures = await this.pictureService.findManyWithVisit(
+      { category, createdAt, title },
+      { id },
+    );
+
+    return pictures.map(({ Visit, ...picture }) => ({
+      ...picture,
+      currentUser: {
+        visited: Visit.length > 0,
+      },
+    }));
   }
 
   @Get(':id')
@@ -79,8 +96,8 @@ export class PictureController {
     @Body() dto: UpdatePictureDto,
     @UploadedFile() image?: Express.Multer.File,
   ) {
-    const data = {...dto, filename: image?.filename};
-   
+    const data = { ...dto, filename: image?.filename };
+
     const picture = await this.pictureService.update({ id }, data);
 
     return picture;

@@ -1,5 +1,6 @@
 import { plainToInstance, Type } from 'class-transformer';
 import {
+  IsEmail,
   IsIn,
   IsInt,
   IsNotEmpty,
@@ -39,6 +40,29 @@ export class EnvironmentVariables {
   @IsNotEmpty()
   @MinLength(16)
   APP_SESSION_SECRET!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @MinLength(16)
+  APP_JWT_SECRET!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  EMAIL_HOST!: string;
+
+  @IsString()
+  EMAIL_ALIAS!: string;
+
+  @IsEmail()
+  EMAIL_USER!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  EMAIL_PASS!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  EMAIL_TRANSPORT!: string;
 
   @IsString()
   @IsNotEmpty()

@@ -13,6 +13,7 @@ type PictureVariables = Pick<
 @Injectable()
 export class PictureConfigService implements MulterOptionsFactory {
   constructor(private configService: ConfigService<PictureVariables, true>) {}
+
   createMulterOptions(): MulterOptions | Promise<MulterOptions> {
     const dest = this.pictureUploadDestination;
     const fileSize = this.pictureUploadSizeLimit;

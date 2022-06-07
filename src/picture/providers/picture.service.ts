@@ -21,9 +21,21 @@ export class PictureService {
   }
 
   async findMany(where: Prisma.PictureWhereInput) {
-    const picture = this.database.picture.findMany({ where });
+    const pictures = this.database.picture.findMany({ where });
 
-    return picture;
+    return pictures;
+  }
+
+  async findManyWithVisit(
+    where: Prisma.PictureWhereInput,
+    user: Prisma.UserWhereUniqueInput,
+  ) {
+    const pictures = this.database.picture.findMany({
+      where,
+      include: { Visit: { where: { user } } },
+    });
+
+    return pictures;
   }
 
   async findOne(where: Prisma.PictureWhereUniqueInput) {
@@ -37,7 +49,7 @@ export class PictureService {
     data: Prisma.PictureUpdateWithoutVisitInput,
   ) {
     if (data.filename != null) {
-      const oldPicture = await this.database.picture.findFirst({where})
+      const oldPicture = await this.database.picture.findFirst({ where });
 
       if (oldPicture == null) {
         return oldPicture;
@@ -64,12 +76,7 @@ export class PictureService {
 
   async removeImage(filename: string) {
     try {
-      await unlink(
-        join(
-          this.configService.pictureUploadDestination,
-          filename,
-        ),
-      );
+      await unlink(join(this.configService.pictureUploadDestination, filename));
     } catch {
       throw new BadRequestException();
     }

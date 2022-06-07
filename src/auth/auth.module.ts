@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { JwtModule } from '@nestjs/jwt';
 
 import { UserModule } from '../user/user.module';
 
@@ -10,13 +11,22 @@ import { GoogleOAuthGuard } from './guards/google-auth.guard';
 import { LocalStrategy } from './strategies/local.strategy';
 import { GoogleStrategy } from './strategies/google.strategy';
 import { AdminStrategy } from './strategies/admin.strategy';
+import { MailerModule } from '@nestjs-modules/mailer';
 
 @Module({
-  imports: [UserModule],
+  imports: [
+    UserModule,
+    JwtModule.registerAsync({
+      useClass: AuthConfigService,
+    }),
+    MailerModule.forRootAsync({
+      useClass: AuthConfigService,
+    }),
+  ],
   controllers: [AuthController],
   providers: [
-    AuthConfigService,
     AuthService,
+    AuthConfigService,
     LocalAuthGuard,
     GoogleOAuthGuard,
     LocalStrategy,

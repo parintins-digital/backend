@@ -13,7 +13,7 @@ model User {
   lastName     String?
   createdAt    DateTime                @default(now())
   localAccount LocalAccount?
-  OAuthAccount OAuthAccount[]
+  OAuthAccount OAuthAccount?
   Visit        Visit[]
 }
 
@@ -56,11 +56,11 @@ model OAuthAccount {
 }
 
 model LocalAccount {
-  id       Int     @id            @default(autoincrement())
-  email    String  @unique
+  id       Int                    @id     @default(autoincrement())
+  email    String                 @unique
   password Bytes   @db.Binary(60)
-  admin    Boolean                @default(false)
-  userId   String  @db.Char(36)
+  admin    Boolean                        @default(false)
+  userId   String  @db.Char(36)   @unique
 
   user     User    @relation(fields: [userId], references: [id])
 }

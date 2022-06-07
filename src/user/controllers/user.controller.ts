@@ -8,15 +8,15 @@ import {
   Session,
 } from '@nestjs/common';
 
+import { hash } from 'bcrypt';
+
 import { UserService } from '../providers/user.service';
 import { CreateUserDTO } from '../dto/user/create-user.dto';
 import { UpdateUserDTO } from '../dto/user/update-user.dto';
 import { RequestSession } from 'src/auth/model/request-session';
 import { Authenticated } from 'src/auth/decorators/authenticated.decorator';
-import { hash } from 'bcrypt';
 
 @Controller('user')
-@Authenticated()
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
@@ -34,6 +34,7 @@ export class UserController {
   }
 
   @Get()
+  @Authenticated()
   findCurrentUser(@Session() session: RequestSession) {
     const id = session.user;
 
@@ -41,11 +42,13 @@ export class UserController {
   }
 
   @Get('admin')
+  @Authenticated()
   isCurrentUserAdmin(@Session() session: RequestSession) {
     return session.admin;
   }
 
   @Patch()
+  @Authenticated()
   update(@Session() session: RequestSession, @Body() body: UpdateUserDTO) {
     const id = session.user;
 
@@ -53,6 +56,7 @@ export class UserController {
   }
 
   @Delete()
+  @Authenticated()
   remove(@Session() session: RequestSession) {
     const id = session.user;
 

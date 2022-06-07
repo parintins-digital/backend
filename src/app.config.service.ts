@@ -5,7 +5,11 @@ import { EnvironmentVariables } from './config/env.validation';
 
 type AppVariables = Pick<
   EnvironmentVariables,
-  'APP_HOST' | 'APP_PORT' | 'APP_API_DOMAIN' | 'APP_CLIENT_URL' | 'APP_SESSION_SECRET'
+  | 'APP_HOST'
+  | 'APP_PORT'
+  | 'APP_API_DOMAIN'
+  | 'APP_CLIENT_URL'
+  | 'APP_SESSION_SECRET'
 >;
 
 @Injectable()
@@ -33,7 +37,7 @@ export class AppConfigService {
   }
 
   get secret(): string {
-    const env = this.configService.get('APP_SESSION_SECRET', {infer: true});
+    const env = this.configService.get('APP_SESSION_SECRET', { infer: true });
     return env;
   }
 }

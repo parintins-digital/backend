@@ -1,17 +1,28 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { MailerService } from '@nestjs-modules/mailer';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 
 import { LocalAccount, OAuthAccount } from '@prisma/client';
-import { compare } from 'bcrypt';
+import { compare, hash } from 'bcrypt';
 import { Profile } from 'passport';
 
 import { AccountService } from 'src/user/providers/account.service';
 import { UserService } from 'src/user/providers/user.service';
+import { JwtPayload } from '../model/jwt-payload';
+import { AuthConfigService } from './auth.config.service';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private userService: UserService,
-    private accountService: AccountService,
+    private readonly configService: AuthConfigService,
+    private readonly userService: UserService,
+    private readonly accountService: AccountService,
+    private readonly jwtService: JwtService,
+    private readonly mailerService: MailerService,
   ) {}
 
   async oauthLogin(profile: Profile): Promise<OAuthAccount> {
@@ -37,8 +48,9 @@ export class AuthService {
   }
 
   async localLogin(email: string, password: string): Promise<LocalAccount> {
-    let account = await this.accountService.findLocalAccount({
+    const account = await this.accountService.findLocalAccount({
       email,
+      admin: false,
     });
 
     // Email não registrado
@@ -56,8 +68,9 @@ export class AuthService {
   }
 
   async adminLogin(email: string, password: string): Promise<LocalAccount> {
-    let account = await this.accountService.findAdminAccount({
+    const account = await this.accountService.findLocalAccount({
       email,
+      admin: true,
     });
 
     // Email não registrado
@@ -72,5 +85,57 @@ export class AuthService {
     }
 
     return account;
+  }
+
+  async emailPasswordResetUrl(email: string): Promise<void> {
+    const account = await this.accountService.findLocalAccount({
+      email,
+    });
+
+    if (account == null) {
+      return;
+    }
+
+    const user = (await this.userService.findOne({ id: account.userId }))!;
+
+    const payload: JwtPayload = {
+      email,
+      id: user.id,
+    };
+    const token = await this.jwtService.signAsync(payload);
+
+    const resetUrl = `${this.configService.clientUrl}/reset/new-password?token=${token}`;
+
+    await this.mailerService.sendMail({
+      template: 'reset-password',
+      to: email,
+      subject: 'Alteração de senha',
+      context: {
+        name: user.firstName,
+        url: resetUrl,
+      },
+    });
+  }
+
+  async resetPassword(token: string, password: string) {
+    const payload: JwtPayload = await this.jwtService.verifyAsync(token);
+
+    const hashedPassword = Buffer.from(await hash(password, 10), 'utf-8');
+
+    await this.accountService.updatePassword(
+      { email: payload.email },
+      hashedPassword,
+    );
+
+    return;
+  }
+
+  async verifyToken(token: string) {
+    try {
+      await this.jwtService.verifyAsync(token);
+      return;
+    } catch {
+      throw new NotFoundException();
+    }
   }
 }

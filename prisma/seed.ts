@@ -5,7 +5,10 @@ const prisma = new PrismaClient();
 async function main() {
   const firstName = 'Parintins.dev';
   const email = 'dev.noreply@parintinsdigital.com.br';
-  const password = Buffer.from(await hash('Unbundle6.Kilowatt.Pentagram', 10), 'utf-8');
+  const password = Buffer.from(
+    await hash('Unbundle6.Kilowatt.Pentagram', 10),
+    'utf-8',
+  );
 
   const admin = await prisma.user.create({
     data: {

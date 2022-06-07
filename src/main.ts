@@ -12,7 +12,7 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
-  
+
   const appConfig = app.get(AppConfigService);
   const prismaClient = app.get(PrismaService);
 
@@ -40,7 +40,7 @@ async function bootstrap() {
       store: new PrismaSessionStore(prismaClient, {
         checkPeriod: 5 * 60 * 1000,
         dbRecordIdIsSessionId: true,
-        ttl: 2 * 60 * 60 * 1000
+        ttl: 2 * 60 * 60 * 1000,
       }),
     }),
   );

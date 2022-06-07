@@ -1,5 +1,11 @@
 import { PictureCategory } from '@prisma/client';
-import { IsIn, IsNotEmpty, IsString, MaxLength, ValidateIf } from 'class-validator';
+import {
+  IsIn,
+  IsNotEmpty,
+  IsString,
+  MaxLength,
+  ValidateIf,
+} from 'class-validator';
 
 export class CreatePictureDto {
   @IsString()
@@ -19,7 +25,12 @@ export class CreatePictureDto {
   @IsNotEmpty()
   author: string;
 
-  constructor(title: string, category: PictureCategory, author: string, description?: string) {
+  constructor(
+    title: string,
+    category: PictureCategory,
+    author: string,
+    description?: string,
+  ) {
     this.title = title;
     this.category = category;
     this.author = author;

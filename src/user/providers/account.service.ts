@@ -48,17 +48,23 @@ export class AccountService {
     return account;
   }
 
-  async findLocalAccount(where: Prisma.LocalAccountWhereUniqueInput) {
+  async findLocalAccount(where: Prisma.LocalAccountWhereInput) {
     const account = this.database.localAccount.findFirst({
-      where: { ...where, admin: false },
+      where,
     });
 
     return account;
   }
 
-  async findAdminAccount(where: Prisma.LocalAccountWhereUniqueInput) {
-    const account = this.database.localAccount.findFirst({
-      where: { ...where, admin: true },
+  async updatePassword(
+    where: Prisma.LocalAccountWhereUniqueInput,
+    password: Buffer,
+  ) {
+    const account = this.database.localAccount.update({
+      data: {
+        password,
+      },
+      where,
     });
 
     return account;
