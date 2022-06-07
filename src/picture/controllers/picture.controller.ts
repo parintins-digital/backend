@@ -71,7 +71,13 @@ export class PictureController {
     }
 
     const pictures = await this.pictureService.findManyWithVisit(
-      { category, createdAt, title },
+      {
+        category,
+        createdAt,
+        title: {
+          contains: title,
+        },
+      },
       { id },
     );
 

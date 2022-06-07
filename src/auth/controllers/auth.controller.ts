@@ -46,7 +46,6 @@ export class AuthController {
   ) {
     session.user = userAccount.userId;
     session.admin = userAccount.admin;
-    session.save((err) => (err != null ? console.log(err) : err));
 
     return res.redirect(this.authConfig.loginRedirectUrl);
   }
